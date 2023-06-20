@@ -6,14 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,6 +62,27 @@ fun MenuScreen(){
                     iconId = R.drawable.pizza1,
                     isNew = true,
                     price = 1
+                ),
+                Feature(
+                    title = "Pizza",
+                    description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
+                    iconId = R.drawable.pizza2,
+                    isNew = true,
+                    price = 1000000
+                ),
+                Feature(
+                    title = "Pizza",
+                    description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
+                    iconId = R.drawable.pizza2,
+                    isNew = true,
+                    price = 1000000
+                ),
+                Feature(
+                    title = "Pizza",
+                    description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
+                    iconId = R.drawable.pizza2,
+                    isNew = true,
+                    price = 1000000
                 ),
                 Feature(
                     title = "Pizza",
@@ -487,7 +505,8 @@ fun CurrentMeditation(
 
 @ExperimentalFoundationApi
 @Composable
-fun FeatureSection(features: List<Feature>) {
+fun FeatureSection(features: List<Feature>, selectedChipList: HashMap<Int,Int>) {
+    val scrollState = rememberLazyListState()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -504,6 +523,11 @@ fun FeatureSection(features: List<Feature>) {
                 FeatureItem(feature = features[it])
             }
         }
+    }
+
+    LaunchedEffect(selectedChipIndex) {
+        val itemIndex = selectedChipIndex.coerceIn(0, features.size - 1)
+        scrollState.animateScrollToItem(itemIndex)
     }
 }
 
@@ -570,6 +594,8 @@ fun NewIndicator() {
 }
 @Composable
 fun DeliveryOptions() {
+    var selectedOption by remember { mutableStateOf(DeliveryOption.None) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -580,56 +606,55 @@ fun DeliveryOptions() {
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp)
-                    .clickable { }
-                    .background(Color.Blue,  shape = CircleShape)
-                    .wrapContentSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Home Delivery",
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(12.dp)
-                )
-            }
+            RadioButtonOption(
+                text = "Home Delivery",
+                selected = selectedOption == DeliveryOption.HomeDelivery,
+                onClick = { selectedOption = DeliveryOption.HomeDelivery }
+            )
 
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp)
-                    .clickable { }
-                    .background(Color.Blue, shape = CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Deliver",
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
+            RadioButtonOption(
+                text = "Deliver",
+                selected = selectedOption == DeliveryOption.Deliver,
+                onClick = { selectedOption = DeliveryOption.Deliver }
+            )
         }
-    }
 
+        Spacer(modifier = Modifier.height(10.dp))
+
+        RadioButtonOption(
+            text = "Restaurant",
+            selected = selectedOption == DeliveryOption.Restaurant,
+            onClick = { selectedOption = DeliveryOption.Restaurant }
+        )
+    }
+}
+
+@Composable
+fun RadioButtonOption(text: String, selected: Boolean, onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .padding(60.dp)
-            .padding(vertical = 40.dp)
-            .size(width = 300.dp, height = 35.dp)
-            .clickable { }
-            .background(Color.Blue, shape = CircleShape),
+            .padding(start = 8.dp)
+            .clickable { onClick() }
+            .background(
+                color = if (selected) Color.Blue else Color.LightGray,
+                shape = CircleShape
+            ),
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Restaurant",
+            text = text,
             color = Color.White,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(8.dp)
         )
     }
 }
+
+enum class DeliveryOption {
+    None,
+    HomeDelivery,
+    Deliver,
+    Restaurant
+}
+
 
