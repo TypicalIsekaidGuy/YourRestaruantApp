@@ -166,7 +166,7 @@ fun BottomMenu(
         modifier = modifier
             .fillMaxWidth()
             .background(DeepBlue)
-            .padding(15.dp)
+            .padding(5.dp)
     ) {
         items.forEachIndexed { index, item ->
             BottomMenuItem(
@@ -488,13 +488,17 @@ fun CurrentMeditation(
 @ExperimentalFoundationApi
 @Composable
 fun FeatureSection(features: List<Feature>) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 240.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight() // Expand to full height
+            .padding(top = 250.dp),// , // Adjust the padding as needed
+        verticalArrangement = Arrangement.Bottom // Align content to the bottom
+    ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(1),
-            contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp, bottom = 100.dp),
-            modifier = Modifier.fillMaxHeight()
+            contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp, bottom = 80.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
             items(features.size) {
                 FeatureItem(feature = features[it])
@@ -581,14 +585,15 @@ fun DeliveryOptions() {
                     .weight(1f)
                     .padding(end = 8.dp)
                     .clickable { }
-                    .background(Color.Blue,  shape = CircleShape),
+                    .background(Color.Blue,  shape = CircleShape)
+                    .wrapContentSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Home Delivery",
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(12.dp)
                 )
             }
 
@@ -604,7 +609,7 @@ fun DeliveryOptions() {
                     text = "Deliver",
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(8.dp)
                 )
             }
         }
@@ -613,8 +618,8 @@ fun DeliveryOptions() {
     Box(
         modifier = Modifier
             .padding(60.dp)
-            .padding(vertical = 60.dp)
-            .size(width = 300.dp, height = 50.dp)
+            .padding(vertical = 40.dp)
+            .size(width = 300.dp, height = 35.dp)
             .clickable { }
             .background(Color.Blue, shape = CircleShape),
         contentAlignment = Alignment.Center
@@ -623,7 +628,7 @@ fun DeliveryOptions() {
             text = "Restaurant",
             color = Color.White,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(8.dp)
         )
     }
 }
