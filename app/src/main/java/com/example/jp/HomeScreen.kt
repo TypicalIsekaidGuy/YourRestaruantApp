@@ -1,6 +1,7 @@
 package com.example.jp
 
 import android.graphics.drawable.shapes.OvalShape
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -35,17 +36,15 @@ import com.example.jp.R
 import com.example.jp.standardQuadFromTo
 import com.example.jp.ui.theme.*
 
-
 @ExperimentalFoundationApi
 @Composable
 fun MenuScreen(){
     Box(
         modifier = Modifier
-            .background(DeepBlue)
+            .background(DeepDark)
             .fillMaxSize()
     ){
         MenuTopBar()
-        DeliveryOptions()
         ChipSection(chips = listOf("Big Pizza", "Small Pizza", "Depression","burgir","sticker"))
         FeatureSection(
             features = listOf(
@@ -101,148 +100,24 @@ fun MenuScreen(){
             )
         )
         BottomMenu(items = listOf(
-            BottomMenuContent("Menu", R.drawable.pizza_24),
-            BottomMenuContent("Meditate", R.drawable.ic_launcher_background),
-            BottomMenuContent("Sleep", R.drawable.ic_launcher_background),
-            BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24),
-            BottomMenuContent("Profile", R.drawable.face_24),
+            BottomMenuContent("Menu", R.drawable.pizza_24, true),
+            BottomMenuContent("Meditate", R.drawable.ic_launcher_background, false),
+            BottomMenuContent("Sleep", R.drawable.ic_launcher_background, false),
+            BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24, false),
+            BottomMenuContent("Profile", R.drawable.face_24, false),
         ), modifier = Modifier.align(Alignment.BottomCenter))
     }
 }
 
 
-@ExperimentalFoundationApi
-@Composable
-fun HomeScreen() {
-    Box(
-        modifier = Modifier
-            .background(DeepBlue)
-            .fillMaxSize()
-    ) {
-        Column {
-            GreetingSection()
-            ChipSection(chips = listOf("Sweet sleep", "Insomnia", "Depression"))
-            CurrentMeditation()
-            FeatureSection(
-                features = listOf(
-                    Feature(
-                        title = "Pizza",
-                        description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
-                        iconId = R.drawable.scr,
-                        isNew = true,
-                        price = 100
-                    ),
-                    Feature(
-                        title = "Pizza",
-                        description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
-                        iconId = R.drawable.scr,
-                        isNew = true,
-                        price = 1
-                    ),
-                    Feature(
-                        title = "Pizza",
-                        description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
-                        iconId = R.drawable.scr,
-                        isNew = true,
-                        price = 1000000
-                    ),
-                    Feature(
-                        title = "Pizza",
-                        description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
-                        iconId = R.drawable.scr,
-                        isNew = false,
-                        price = 100
-                    )
-                )
-            )
-        }
-        BottomMenu(items = listOf(
-            BottomMenuContent("Home", R.drawable.ic_launcher_background),
-            BottomMenuContent("Meditate", R.drawable.ic_launcher_background),
-            BottomMenuContent("Sleep", R.drawable.ic_launcher_background),
-            BottomMenuContent("Music", R.drawable.ic_launcher_background),
-            BottomMenuContent("Profile", R.drawable.ic_launcher_background),
-        ), modifier = Modifier.align(Alignment.BottomCenter))
-    }
-}
 
-@Composable
-fun BottomMenu(
-    items: List<BottomMenuContent>,
-    modifier: Modifier = Modifier,
-    activeHighlightColor: Color = ButtonBlue,
-    activeTextColor: Color = Color.White,
-    inactiveTextColor: Color = AquaBlue,
-    initialSelectedItemIndex: Int = 0
-) {
-    var selectedItemIndex by remember {
-        mutableStateOf(initialSelectedItemIndex)
-    }
-    Row(
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(DeepBlue)
-            .padding(5.dp)
-    ) {
-        items.forEachIndexed { index, item ->
-            BottomMenuItem(
-                item = item,
-                isSelected = index == selectedItemIndex,
-                activeHighlightColor = activeHighlightColor,
-                activeTextColor = activeTextColor,
-                inactiveTextColor = inactiveTextColor
-            ) {
-                selectedItemIndex = index
-            }
-        }
-    }
-}
-
-@Composable
-fun BottomMenuItem(
-    item: BottomMenuContent,
-    isSelected: Boolean = false,
-    activeHighlightColor: Color = ButtonBlue,
-    activeTextColor: Color = Color.White,
-    inactiveTextColor: Color = AquaBlue,
-    onItemClick: () -> Unit
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.clickable {
-            onItemClick()
-        }
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(Color.Transparent)
-                .padding(10.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = item.iconId),
-                contentDescription = item.title,
-                tint = if (isSelected) activeTextColor else inactiveTextColor,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-        Text(
-            text = item.title,
-            color = if(isSelected) activeTextColor else inactiveTextColor
-        )
-    }
-}
 
 @Composable
 fun MenuTopBar(){
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(DeepBlue)
+            .background(DeepDark)
             .padding(vertical = 15.dp)
     ) {
         Box(
@@ -309,7 +184,7 @@ fun ChoosingDestination(){
         modifier = Modifier
             .clip(RoundedCornerShape(30.dp))
             .padding(vertical = 70.dp)
-            .background(Color.White)
+            .background(TextWhite)
             .fillMaxWidth()
     ){
         Card(
@@ -327,7 +202,7 @@ fun ChoosingDestination(){
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 70.dp, horizontal = 10.dp)
-            .background(Color.White, shape = RoundedCornerShape(10.dp))
+            .background(TextWhite, shape = RoundedCornerShape(10.dp))
     ){
         Column() {
 
@@ -398,38 +273,6 @@ fun ChoosingDestination(){
 }
 
 @Composable
-fun GreetingSection(
-    name: String = "Philipp"
-) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Good morning, $name",
-                style = MaterialTheme.typography.h2
-            )
-            Text(
-                text = "We wish you have a good day!",
-                style = MaterialTheme.typography.body1
-            )
-        }
-        Icon(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = "Search",
-            tint = Color.White,
-            modifier = Modifier.size(24.dp)
-        )
-    }
-}
-
-@Composable
 fun ChipSection(
     chips: List<String>
 ) {
@@ -445,16 +288,18 @@ fun ChipSection(
                     .padding(start = 15.dp, top = 15.dp, bottom = 15.dp)
                     .clickable {
                         selectedChipIndex = it
+                        Log.d("HELLLO",selectedChipIndex.toString())
                     }
                     .clip(RoundedCornerShape(10.dp))
                     .background(
-                        if (selectedChipIndex == it) ButtonBlue
-                        else DarkerButtonBlue,
+                        if (selectedChipIndex == it) ButtonDarkOrange
+                        else ButtonDarkOut,
                         shape = CircleShape
                     )
                     .padding(15.dp)
             ) {
-                Text(text = chips[it], color = TextWhite)
+                Text(text = chips[it],
+                    color = if (selectedChipIndex == it) TextSelectedOrange else TextGray)
             }
         }
     }}
@@ -490,13 +335,13 @@ fun CurrentMeditation(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(ButtonBlue)
+                .background(ButtonDarkOrange)
                 .padding(10.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = "Play",
-                tint = Color.White,
+                tint = TextWhite,
                 modifier = Modifier.size(16.dp)
             )
         }
@@ -505,7 +350,7 @@ fun CurrentMeditation(
 
 @ExperimentalFoundationApi
 @Composable
-fun FeatureSection(features: List<Feature>, selectedChipList: HashMap<Int,Int>) {
+fun FeatureSection(features: List<Feature>) {
     val scrollState = rememberLazyListState()
     Column(
         modifier = Modifier
@@ -525,10 +370,10 @@ fun FeatureSection(features: List<Feature>, selectedChipList: HashMap<Int,Int>) 
         }
     }
 
-    LaunchedEffect(selectedChipIndex) {
-        val itemIndex = selectedChipIndex.coerceIn(0, features.size - 1)
+/*    LaunchedEffect(selectedChipInt) {
+        val itemIndex = selectedChipInt.coerceIn(0, features.size - 1)
         scrollState.animateScrollToItem(itemIndex)
-    }
+    }*/
 }
 
 @Composable
@@ -555,14 +400,14 @@ fun FeatureItem(feature: Feature) {
                 .weight(1f)
                 .padding(start = 16.dp)
         ) {
-            Text(text = feature.title, color = Color.White)
-            Text(text = feature.description,color = Color.White, modifier = Modifier.padding())
+            Text(text = feature.title, color = TextWhite)
+            Text(text = feature.description,color = TextWhite, modifier = Modifier.padding())
             Box(modifier = Modifier
                 .padding(vertical = 6.dp)
                 .clickable { /* Handle button click */ }){
             Box(
                 modifier = Modifier
-                    .background(ButtonBlue, shape = CircleShape)
+                    .background(ButtonDarkOrange, shape = CircleShape)
                     .padding(vertical = 6.dp, horizontal = 15.dp)
             ) {
                 Text(
@@ -580,81 +425,18 @@ fun NewIndicator() {
     Box(
         modifier = Modifier
             .size(48.dp)
-            .background(Color.Red, shape = CircleShape)
+            .background(Red, shape = CircleShape)
             .padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = "New",
-            color = Color.White,
+            color = TextWhite,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold
         )
     }
 }
-@Composable
-fun DeliveryOptions() {
-    var selectedOption by remember { mutableStateOf(DeliveryOption.None) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(60.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            RadioButtonOption(
-                text = "Home Delivery",
-                selected = selectedOption == DeliveryOption.HomeDelivery,
-                onClick = { selectedOption = DeliveryOption.HomeDelivery }
-            )
-
-            RadioButtonOption(
-                text = "Deliver",
-                selected = selectedOption == DeliveryOption.Deliver,
-                onClick = { selectedOption = DeliveryOption.Deliver }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        RadioButtonOption(
-            text = "Restaurant",
-            selected = selectedOption == DeliveryOption.Restaurant,
-            onClick = { selectedOption = DeliveryOption.Restaurant }
-        )
-    }
-}
-
-@Composable
-fun RadioButtonOption(text: String, selected: Boolean, onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .padding(start = 8.dp)
-            .clickable { onClick() }
-            .background(
-                color = if (selected) Color.Blue else Color.LightGray,
-                shape = CircleShape
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            color = Color.White,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(8.dp)
-        )
-    }
-}
-
-enum class DeliveryOption {
-    None,
-    HomeDelivery,
-    Deliver,
-    Restaurant
-}
 
 
