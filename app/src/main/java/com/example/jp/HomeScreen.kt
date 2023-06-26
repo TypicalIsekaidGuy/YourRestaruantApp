@@ -1,10 +1,7 @@
 package com.example.jp
 
-import android.app.Application
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.shapes.OvalShape
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -19,28 +16,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.Room
-import com.example.jp.BottomMenuContent
-import com.example.jp.R
-import com.example.jp.data.Products
-import com.example.jp.data.ProductsDatabase
-import com.example.jp.standardQuadFromTo
+import com.example.jp.data.products.Products
 import com.example.jp.ui.theme.*
-import dagger.Provides
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 @ExperimentalFoundationApi
 @Composable

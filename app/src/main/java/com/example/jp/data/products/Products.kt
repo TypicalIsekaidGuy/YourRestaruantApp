@@ -1,4 +1,4 @@
-package com.example.jp.data
+package com.example.jp.data.products
 
 import android.media.Image
 import androidx.annotation.DrawableRes

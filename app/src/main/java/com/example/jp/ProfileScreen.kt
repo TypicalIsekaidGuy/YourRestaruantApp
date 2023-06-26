@@ -1,45 +1,36 @@
 package com.example.jp
 
-import android.graphics.drawable.shapes.OvalShape
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.jp.BottomMenuContent
-import com.example.jp.R
-import com.example.jp.data.Products
-import com.example.jp.data.ProductsDao
-import com.example.jp.standardQuadFromTo
+import com.example.jp.data.news.News
+import com.example.jp.data.products.Products
 import com.example.jp.ui.theme.*
 
 @ExperimentalFoundationApi
 @Composable
-fun ProfileScreen(){
+fun ProfileScreen(db: MutableState<List<News>>){
     Box(
         modifier = Modifier
             .background(DeepDark)
@@ -47,6 +38,7 @@ fun ProfileScreen(){
     ){
         ProfileTopBar()
         DeliveryOptions()
+        NewsSection(db.component1())
         /*OnSale()*/
         BottomMenu(items = listOf(
             BottomMenuContent("Menu", R.drawable.pizza_24, false),
@@ -138,15 +130,24 @@ enum class DeliveryOption {
 @ExperimentalFoundationApi
 @Composable
 fun OnSaleSection(items: List<OnSale>) {
-    Column(
+/*    LazyRow(
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(newsList) { newsItem ->
+            NewsItemCard(newsItem)
+        }
+    }*/
+
+/*    Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight() // Expand to full height
             .padding(top = 40.dp),// , // Adjust the padding as needed
         verticalArrangement = Arrangement.Bottom // Align content to the bottom
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(1),
+        LazyHorizontalGrid(
+            rows = GridCells.Fixed(1),
             contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp, bottom = 80.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -154,7 +155,7 @@ fun OnSaleSection(items: List<OnSale>) {
                 OnSaleItem(onSale = items[it])
             }
         }
-    }
+    }*/
 }
 
 @Composable
@@ -176,3 +177,52 @@ fun OnSaleItem(onSale: OnSale) {
     }
 }
 
+@ExperimentalFoundationApi
+@Composable
+fun NewsSection(news: List<News>) {
+    Box(modifier = Modifier.padding(top = 100.dp)){
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(news.size) {
+            NewsItem(newsItem = news[it])
+        }
+    }
+}
+}
+@Composable
+fun NewsItem(newsItem: News) {
+    val bitmap: Bitmap? = BitmapFactory.decodeByteArray(newsItem.image, 0, newsItem.image.size)
+    val imageBitmap: ImageBitmap? = bitmap?.asImageBitmap()
+    Box(
+        modifier = Modifier
+            .clickable { /* Handle news item click */ }
+            .border(width = 2.dp, color = Orange, shape = RoundedCornerShape(20.dp))
+            .padding(8.dp)
+            .width(150.dp)
+            .aspectRatio(0.7f)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Top
+        ) {
+            Text(
+                text = newsItem.tittle,
+                style = TextStyle(fontWeight = FontWeight.Bold),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding()
+            )
+        }
+        imageBitmap?.let {
+            Image(
+                bitmap = it,
+                contentDescription = newsItem.description,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    }
+}

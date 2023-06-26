@@ -3,20 +3,15 @@ package com.example.jp.activities
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.*
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.jp.MenuScreen
-import com.example.jp.data.Products
-import com.example.jp.data.ProductsDatabase
+import com.example.jp.data.products.Products
+import com.example.jp.data.products.ProductsDatabase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
@@ -26,7 +21,7 @@ class MenuActivity : ComponentActivity() {
         Room.databaseBuilder(
             applicationContext,
             ProductsDatabase::class.java,
-            "contacts.db"
+            "products.db"
         )
             .fallbackToDestructiveMigration()
             .createFromAsset("Data/Products.db")
@@ -40,7 +35,7 @@ class MenuActivity : ComponentActivity() {
 
             LaunchedEffect(Unit) {
                 withContext(Dispatchers.IO) {
-                    val products = db.dao.getAllProducts()
+                    val products = db.productsDao.getAllProducts()
                     productsState.value = products
                 }
             }

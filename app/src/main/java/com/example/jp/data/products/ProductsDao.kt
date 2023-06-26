@@ -1,7 +1,6 @@
-package com.example.jp.data
+package com.example.jp.data.products
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 
 @Dao
