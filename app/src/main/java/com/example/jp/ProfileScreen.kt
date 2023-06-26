@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jp.BottomMenuContent
 import com.example.jp.R
+import com.example.jp.data.Products
+import com.example.jp.data.ProductsDao
 import com.example.jp.standardQuadFromTo
 import com.example.jp.ui.theme.*
 
@@ -110,7 +112,7 @@ fun RadioButtonOption(text: String, selected: Boolean, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .padding(start = 8.dp)
-            .clickable { onClick() }
+            .clickable { onClick }
             .background(
                 color = if (selected) ButtonDarkOrange else ButtonDarkOut,
                 shape = CircleShape

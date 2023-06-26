@@ -1,3 +1,4 @@
+/*
 package com.example.jp
 
 import androidx.annotation.DrawableRes
@@ -9,4 +10,4 @@ data class Feature(
     @DrawableRes val iconId: Int,
     val isNew: Boolean,
     val price: Int
-)
+)a*/

@@ -1,5 +1,6 @@
 package com.example.jp.data
 
+import android.media.Image
 import androidx.annotation.DrawableRes
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -7,10 +8,11 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "Products")
 data class Products(
     @PrimaryKey(autoGenerate = true)
-    val title: String,
+    val id: Int,
+    val tittle: String,
     val type: String,
     val description: String,
-    @DrawableRes val iconId: Int,
-    val isNew: Boolean,
-    val price: Int
+    val icon: ByteArray,
+    val price: Int,
+    val isNew: Boolean
 )

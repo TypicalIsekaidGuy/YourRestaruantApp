@@ -1,5 +1,9 @@
 package com.example.jp
 
+import android.app.Application
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.shapes.OvalShape
 import android.util.Log
 import androidx.compose.foundation.*
@@ -16,9 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -30,15 +32,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.Room
 import com.example.jp.BottomMenuContent
-import com.example.jp.Feature
 import com.example.jp.R
+import com.example.jp.data.Products
+import com.example.jp.data.ProductsDatabase
 import com.example.jp.standardQuadFromTo
 import com.example.jp.ui.theme.*
+import dagger.Provides
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @ExperimentalFoundationApi
 @Composable
-fun MenuScreen(){
+fun MenuScreen(db: MutableState<List<Products>>){
     Box(
         modifier = Modifier
             .background(DeepDark)
@@ -46,59 +52,7 @@ fun MenuScreen(){
     ){
         MenuTopBar()
         ChipSection(chips = listOf("Big Pizza", "Small Pizza", "Depression","burgir","sticker"))
-        FeatureSection(
-            features = listOf(
-                Feature(
-                    title = "Pizza",
-                    description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
-                    iconId = R.drawable.pizza1,
-                    isNew = true,
-                    price = 100
-                ),
-                Feature(
-                    title = "Pizza",
-                    description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
-                    iconId = R.drawable.pizza1,
-                    isNew = true,
-                    price = 1
-                ),
-                Feature(
-                    title = "Pizza",
-                    description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
-                    iconId = R.drawable.pizza2,
-                    isNew = true,
-                    price = 1000000
-                ),
-                Feature(
-                    title = "Pizza",
-                    description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
-                    iconId = R.drawable.pizza2,
-                    isNew = true,
-                    price = 1000000
-                ),
-                Feature(
-                    title = "Pizza",
-                    description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
-                    iconId = R.drawable.pizza2,
-                    isNew = true,
-                    price = 1000000
-                ),
-                Feature(
-                    title = "Pizza",
-                    description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
-                    iconId = R.drawable.pizza2,
-                    isNew = true,
-                    price = 1000000
-                ),
-                Feature(
-                    title = "Pizza",
-                    description = "Beutiful pizza with beutiful toppings, and its good, very good i must say! For true enjoyers for the art of cooking!",
-                    iconId = R.drawable.pizza2,
-                    isNew = false,
-                    price = 100
-                )
-            )
-        )
+        FeatureSection(features = db.component1())
         BottomMenu(items = listOf(
             BottomMenuContent("Menu", R.drawable.pizza_24, true),
             BottomMenuContent("Meditate", R.drawable.ic_launcher_background, false),
@@ -347,11 +301,11 @@ fun CurrentMeditation(
         }
     }
 }
-
 @ExperimentalFoundationApi
 @Composable
-fun FeatureSection(features: List<Feature>) {
+fun FeatureSection(features: List<Products>) {
     val scrollState = rememberLazyListState()
+    /*val features by*/
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -375,9 +329,10 @@ fun FeatureSection(features: List<Feature>) {
         scrollState.animateScrollToItem(itemIndex)
     }*/
 }
-
 @Composable
-fun FeatureItem(feature: Feature) {
+fun FeatureItem(feature: Products) {
+    val bitmap: Bitmap? = BitmapFactory.decodeByteArray(feature.icon, 0, feature.icon.size)
+    val imageBitmap: ImageBitmap? = bitmap?.asImageBitmap()
     Row(
         modifier = Modifier.padding(vertical = 10.dp)
     ) {
@@ -386,11 +341,13 @@ fun FeatureItem(feature: Feature) {
                 .weight(1f)
                 .aspectRatio(1f)
         ) {
+            imageBitmap?.let {
             Image(
-                painter = painterResource(id = feature.iconId),
+                bitmap = it,
                 contentDescription = feature.description,
                 modifier = Modifier.fillMaxSize()
             )
+        }
             if (feature.isNew) {
                 NewIndicator()
             }
@@ -400,7 +357,7 @@ fun FeatureItem(feature: Feature) {
                 .weight(1f)
                 .padding(start = 16.dp)
         ) {
-            Text(text = feature.title, color = TextWhite)
+            Text(text = feature.tittle, color = TextWhite)
             Text(text = feature.description,color = TextWhite, modifier = Modifier.padding())
             Box(modifier = Modifier
                 .padding(vertical = 6.dp)
