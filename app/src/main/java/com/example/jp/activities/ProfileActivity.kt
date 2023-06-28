@@ -13,6 +13,8 @@ import com.example.jp.data.products.Products
 import com.example.jp.data.products.ProductsDatabase
 import com.example.jp.data.news.News
 import com.example.jp.data.news.NewsDatabase
+import com.example.jp.data.onSale.OnSale
+import com.example.jp.data.onSale.OnSaleDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -28,20 +30,41 @@ class ProfileActivity : ComponentActivity() {
             .createFromAsset("Data/News.db")
             .build()
     }
+    private val db2 by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            OnSaleDatabase::class.java,
+            "onSale.db"
+        )
+            .fallbackToDestructiveMigration()
+            .createFromAsset("Data/OnSale.db")
+            .build()
+    }
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
 
-            val productsState = remember { mutableStateOf(emptyList<News>()) }
+            val newsState = remember { mutableStateOf(emptyList<News>()) }
+            val onSaleState = remember { mutableStateOf(emptyList<OnSale>()) }
 
             LaunchedEffect(Unit) {
                 withContext(Dispatchers.IO) {
                     val news = db.newsDao.getAllProducts()
-                    productsState.value = news
+                    newsState.value = news
                 }
             }
-            ProfileScreen(productsState)
+
+
+            val productsState = remember { mutableStateOf(emptyList<OnSale>()) }
+
+            LaunchedEffect(Unit) {
+                withContext(Dispatchers.IO) {
+                    val onSale = db2.onSaleDao.getAllProducts()
+                    onSaleState.value = onSale
+                }
+            }
+            ProfileScreen(newsState, onSaleState)
         }
     }
 }

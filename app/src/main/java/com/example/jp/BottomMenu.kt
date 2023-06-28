@@ -1,5 +1,7 @@
 package com.example.jp
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import com.example.jp.ui.theme.AquaBlue
 import com.example.jp.ui.theme.ButtonDarkOrange
 import com.example.jp.ui.theme.DeepDark
@@ -44,9 +47,12 @@ fun BottomMenu(
                 isSelected = index == selectedItemIndex,
                 activeHighlightColor = activeHighlightColor,
                 activeTextColor = activeTextColor,
-                inactiveTextColor = inactiveTextColor
+                inactiveTextColor = inactiveTextColor,
             ) {
                 selectedItemIndex = index
+
+                val intent = Intent(context, item.activityClass)
+                context.startActivity(intent)
             }
         }
     }

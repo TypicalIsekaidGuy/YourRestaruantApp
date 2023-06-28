@@ -1,15 +1,15 @@
-package com.example.jp.data.news
+package com.example.jp.data.onSale
 
 import androidx.room.*
 import com.example.jp.data.Converters
 import com.example.jp.data.news.NewsDao
 
 @Database(
-    entities = [News::class],
+    entities = [OnSale::class],
     version = 1
 )
 @TypeConverters(Converters::class)
-abstract class NewsDatabase: RoomDatabase() {
+abstract class OnSaleDatabase: RoomDatabase() {
 
-    abstract val newsDao: NewsDao
+    abstract val onSaleDao: OnSaleDao
 }

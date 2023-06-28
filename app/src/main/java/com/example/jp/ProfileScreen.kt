@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -25,12 +26,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jp.data.news.News
+import com.example.jp.data.onSale.OnSale
 import com.example.jp.data.products.Products
 import com.example.jp.ui.theme.*
 
 @ExperimentalFoundationApi
 @Composable
-fun ProfileScreen(db: MutableState<List<News>>){
+fun ProfileScreen(db: MutableState<List<News>>, db2: MutableState<List<OnSale>>){
     Box(
         modifier = Modifier
             .background(DeepDark)
@@ -38,8 +40,30 @@ fun ProfileScreen(db: MutableState<List<News>>){
     ){
         ProfileTopBar()
         DeliveryOptions()
-        NewsSection(db.component1())
-        /*OnSale()*/
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 180.dp)
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Bottom,
+        ) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(1),
+                contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp, bottom = 80.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                item {
+                    OnSaleSection(db2.component1())
+                }
+                item {
+                    NewsSection(db.component1())
+                }
+                item {
+                    TechSupportSection()
+                }
+            }
+        }
+
         BottomMenu(items = listOf(
             BottomMenuContent("Menu", R.drawable.pizza_24, false),
             BottomMenuContent("Meditate", R.drawable.ic_launcher_background, false),
@@ -71,107 +95,154 @@ fun ProfileTopBar(){
     }
 }
 @Composable
-fun DeliveryOptions() {
+fun DeliveryOptions(
+/*    onHomeDeliveryClick: () -> Unit,
+    onRestaurantClick: () -> Unit,
+    onAnyClick: () -> Unit*/
+) {
     var selectedOption by remember { mutableStateOf(DeliveryOption.None) }
-
+    val backgroundColor1 = if (selectedOption == DeliveryOption.HomeDelivery) TextSelectedOrange else Orange
+    val backgroundColor2 = if (selectedOption == DeliveryOption.Deliver) TextSelectedOrange else Orange
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(60.dp)
+            .padding(40.dp)
+            .padding(top = 50.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            RadioButtonOption(
-                text = "Home Delivery",
-                selected = selectedOption == DeliveryOption.HomeDelivery,
-                onClick = { selectedOption = DeliveryOption.HomeDelivery }
-            )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp)
+                    .clickable { selectedOption = DeliveryOption.HomeDelivery }
+                    .background(backgroundColor1, shape = RoundedCornerShape(8.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Home Delivery",
+                    color = TextWhite,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(8.dp),
+                    fontSize = 16.sp
+                )
+            }
 
-            RadioButtonOption(
-                text = "Deliver",
-                selected = selectedOption == DeliveryOption.Deliver,
-                onClick = { selectedOption = DeliveryOption.Deliver }
-            )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp)
+                    .clickable { selectedOption = DeliveryOption.Deliver }
+                    .background(backgroundColor2, shape = RoundedCornerShape(8.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Restaurant",
+                    color = TextWhite,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(8.dp),
+                    fontSize = 16.sp
+                )
+            }
+        }
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 35.dp)
+            .padding(top = 140.dp)
+            .padding(start = 5.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp)
+                    .clickable { }
+                    .background(Orange, shape = RoundedCornerShape(8.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Find a place",
+                    color = TextWhite,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(8.dp),
+                    fontSize = 16.sp
+                )
+            }
         }
     }
 }
 
-@Composable
-fun RadioButtonOption(text: String, selected: Boolean, onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .padding(start = 8.dp)
-            .clickable { onClick }
-            .background(
-                color = if (selected) ButtonDarkOrange else ButtonDarkOut,
-                shape = CircleShape
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            color = TextWhite,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(8.dp)
-        )
-    }
-}
+
 
 enum class DeliveryOption {
     None,
     HomeDelivery,
-    Deliver,
-    Restaurant
+    Deliver
 }
 
 @ExperimentalFoundationApi
 @Composable
-fun OnSaleSection(items: List<OnSale>) {
-/*    LazyRow(
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(newsList) { newsItem ->
-            NewsItemCard(newsItem)
-        }
-    }*/
-
-/*    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight() // Expand to full height
-            .padding(top = 40.dp),// , // Adjust the padding as needed
-        verticalArrangement = Arrangement.Bottom // Align content to the bottom
-    ) {
-        LazyHorizontalGrid(
-            rows = GridCells.Fixed(1),
-            contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp, bottom = 80.dp),
-            modifier = Modifier.fillMaxWidth()
+fun OnSaleSection(onSaleItems: List<OnSale>) {
+    Box() {
+        Text(
+            text = "On-Sale",
+            fontSize = 64.sp,
+            color = TextWhite,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(top = 70.dp)
         ) {
-            items(items.size) {
-                OnSaleItem(onSale = items[it])
+            items(onSaleItems.size) {
+                OnSaleItem(OnSaleItem = onSaleItems[it])
             }
         }
-    }*/
+    }
 }
-
 @Composable
-fun OnSaleItem(onSale: OnSale) {
-    Row(
-        modifier = Modifier.padding(vertical = 10.dp)
+fun OnSaleItem(OnSaleItem: OnSale) {
+    val bitmap: Bitmap? = BitmapFactory.decodeByteArray(OnSaleItem.image, 0, OnSaleItem.image.size)
+    val imageBitmap: ImageBitmap? = bitmap?.asImageBitmap()
+    Box(
+        modifier = Modifier
+            .clickable { /* Handle news item click */ }
+            .border(width = 2.dp, color = Orange, shape = RoundedCornerShape(20.dp))
+            .padding(8.dp)
+            .width(150.dp)
+            .aspectRatio(0.7f)
     ) {
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .aspectRatio(1f)
-        ) {
+        imageBitmap?.let {
             Image(
-                painter = painterResource(id = onSale.imageId),
-                contentDescription = onSale.description,
+                bitmap = it,
+                contentDescription = OnSaleItem.description,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
+            )
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            Text(
+                text = OnSaleItem.tittle,
+                style = TextStyle(fontWeight = FontWeight.Bold),
+                textAlign = TextAlign.Start,
+                modifier = Modifier.padding(),
+                fontSize = 20.sp,
+                color = TextWhite
             )
         }
     }
@@ -180,17 +251,25 @@ fun OnSaleItem(onSale: OnSale) {
 @ExperimentalFoundationApi
 @Composable
 fun NewsSection(news: List<News>) {
-    Box(modifier = Modifier.padding(top = 100.dp)){
+    Box() {
+        Text(
+            text = "News",
+            fontSize = 64.sp,
+            color = TextWhite,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     LazyRow(
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(top = 80.dp)
     ) {
         items(news.size) {
             NewsItem(newsItem = news[it])
         }
     }
+    }
 }
-}
+
 @Composable
 fun NewsItem(newsItem: News) {
     val bitmap: Bitmap? = BitmapFactory.decodeByteArray(newsItem.image, 0, newsItem.image.size)
@@ -203,19 +282,6 @@ fun NewsItem(newsItem: News) {
             .width(150.dp)
             .aspectRatio(0.7f)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.Top
-        ) {
-            Text(
-                text = newsItem.tittle,
-                style = TextStyle(fontWeight = FontWeight.Bold),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding()
-            )
-        }
         imageBitmap?.let {
             Image(
                 bitmap = it,
@@ -224,5 +290,51 @@ fun NewsItem(newsItem: News) {
                 modifier = Modifier.fillMaxSize()
             )
         }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            Text(
+                text = newsItem.tittle,
+                style = TextStyle(fontWeight = FontWeight.Bold),
+                textAlign = TextAlign.Start,
+                modifier = Modifier.padding(),
+                fontSize = 20.sp,
+                color = TextWhite
+            )
+        }
+    }
+}
+
+@Composable
+fun TechSupportSection(){
+    Box {
+        Text(
+            text = "Support",
+            fontSize = 64.sp,
+            color = TextWhite,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+        Box(
+            modifier = Modifier.padding(top = 90.dp)
+        ){
+        Box(
+            modifier = Modifier
+                .background(ButtonDarkOrange, shape = CircleShape)
+                .padding(vertical = 6.dp, horizontal = 15.dp)
+                .fillMaxWidth()
+                .clickable {  }
+        ) {
+            Text(
+                text = "Chat",
+                color = TextWhite,
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+    }
     }
 }
