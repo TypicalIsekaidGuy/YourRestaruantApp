@@ -1,5 +1,6 @@
 package com.example.jp
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
@@ -22,12 +23,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jp.activities.MenuActivity
+import com.example.jp.activities.ProfileActivity
 import com.example.jp.data.products.Products
 import com.example.jp.ui.theme.*
 
 @ExperimentalFoundationApi
 @Composable
-fun MenuScreen(db: MutableState<List<Products>>){
+fun MenuScreen(db: MutableState<List<Products>>, context: Context){
     Box(
         modifier = Modifier
             .background(DeepDark)
@@ -37,12 +40,12 @@ fun MenuScreen(db: MutableState<List<Products>>){
         ChipSection(chips = listOf("Big Pizza", "Small Pizza", "Depression","burgir","sticker"))
         FeatureSection(features = db.component1())
         BottomMenu(items = listOf(
-            BottomMenuContent("Menu", R.drawable.pizza_24, true),
-            BottomMenuContent("Meditate", R.drawable.ic_launcher_background, false),
-            BottomMenuContent("Sleep", R.drawable.ic_launcher_background, false),
-            BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24, false),
-            BottomMenuContent("Profile", R.drawable.face_24, false),
-        ), modifier = Modifier.align(Alignment.BottomCenter))
+            BottomMenuContent("Menu", R.drawable.pizza_24, false, MenuActivity::class),
+            BottomMenuContent("Meditate", R.drawable.ic_launcher_background,false, MenuActivity::class),
+            BottomMenuContent("Sleep", R.drawable.ic_launcher_background,false, MenuActivity::class),
+            BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24,false, MenuActivity::class),
+            BottomMenuContent("Profile", R.drawable.face_24, true, ProfileActivity::class),
+        ), modifier = Modifier.align(Alignment.BottomCenter), context = context, initialSelectedItemIndex = 0)
     }
 }
 

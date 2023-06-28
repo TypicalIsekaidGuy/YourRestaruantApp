@@ -1,5 +1,7 @@
 package com.example.jp
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
@@ -25,14 +27,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jp.activities.MenuActivity
+import com.example.jp.activities.NewsOnSalesActivity
 import com.example.jp.data.news.News
 import com.example.jp.data.onSale.OnSale
 import com.example.jp.data.products.Products
 import com.example.jp.ui.theme.*
+import java.util.function.BinaryOperator
 
 @ExperimentalFoundationApi
 @Composable
-fun ProfileScreen(db: MutableState<List<News>>, db2: MutableState<List<OnSale>>){
+fun ProfileScreen(db: List<News>, db2: MutableState<List<OnSale>>, context: Context){
     Box(
         modifier = Modifier
             .background(DeepDark)
@@ -53,10 +58,10 @@ fun ProfileScreen(db: MutableState<List<News>>, db2: MutableState<List<OnSale>>)
                 modifier = Modifier.fillMaxWidth()
             ) {
                 item {
-                    OnSaleSection(db2.component1())
+                    OnSaleSection(db2.component1(),context)
                 }
                 item {
-                    NewsSection(db.component1())
+                    NewsSection(db,context)
                 }
                 item {
                     TechSupportSection()
@@ -65,12 +70,12 @@ fun ProfileScreen(db: MutableState<List<News>>, db2: MutableState<List<OnSale>>)
         }
 
         BottomMenu(items = listOf(
-            BottomMenuContent("Menu", R.drawable.pizza_24, false),
-            BottomMenuContent("Meditate", R.drawable.ic_launcher_background, false),
-            BottomMenuContent("Sleep", R.drawable.ic_launcher_background, false),
-            BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24, false),
-            BottomMenuContent("Profile", R.drawable.face_24, true),
-        ), modifier = Modifier.align(Alignment.BottomCenter))
+            BottomMenuContent("Menu", R.drawable.pizza_24, true, MenuActivity::class),
+            BottomMenuContent("Meditate", R.drawable.ic_launcher_background, false,MenuActivity::class),
+            BottomMenuContent("Sleep", R.drawable.ic_launcher_background, false, MenuActivity::class),
+            BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24, false,MenuActivity::class),
+            BottomMenuContent("Profile", R.drawable.face_24, false, MenuActivity::class),
+        ), modifier = Modifier.align(Alignment.BottomCenter), context = context, initialSelectedItemIndex = 4)
     }
 }
 
@@ -191,7 +196,7 @@ enum class DeliveryOption {
 
 @ExperimentalFoundationApi
 @Composable
-fun OnSaleSection(onSaleItems: List<OnSale>) {
+fun OnSaleSection(onSaleItems: List<OnSale>, context: Context) {
     Box() {
         Text(
             text = "On-Sale",
@@ -205,18 +210,18 @@ fun OnSaleSection(onSaleItems: List<OnSale>) {
             modifier = Modifier.padding(top = 70.dp)
         ) {
             items(onSaleItems.size) {
-                OnSaleItem(OnSaleItem = onSaleItems[it])
+                OnSaleItem(OnSaleItem = onSaleItems[it], context)
             }
         }
     }
 }
 @Composable
-fun OnSaleItem(OnSaleItem: OnSale) {
+fun OnSaleItem(OnSaleItem: OnSale, context: Context) {
     val bitmap: Bitmap? = BitmapFactory.decodeByteArray(OnSaleItem.image, 0, OnSaleItem.image.size)
     val imageBitmap: ImageBitmap? = bitmap?.asImageBitmap()
     Box(
         modifier = Modifier
-            .clickable { /* Handle news item click */ }
+            .clickable { itemOnClick(context, true, OnSaleItem.id) }
             .border(width = 2.dp, color = Orange, shape = RoundedCornerShape(20.dp))
             .padding(8.dp)
             .width(150.dp)
@@ -250,7 +255,7 @@ fun OnSaleItem(OnSaleItem: OnSale) {
 
 @ExperimentalFoundationApi
 @Composable
-fun NewsSection(news: List<News>) {
+fun NewsSection(news: List<News>, context: Context) {
     Box() {
         Text(
             text = "News",
@@ -264,19 +269,21 @@ fun NewsSection(news: List<News>) {
         modifier = Modifier.padding(top = 80.dp)
     ) {
         items(news.size) {
-            NewsItem(newsItem = news[it])
+            NewsItem(newsItem = news[it], context = context)
         }
     }
     }
 }
 
 @Composable
-fun NewsItem(newsItem: News) {
+fun NewsItem(newsItem: News, context: Context) {
     val bitmap: Bitmap? = BitmapFactory.decodeByteArray(newsItem.image, 0, newsItem.image.size)
     val imageBitmap: ImageBitmap? = bitmap?.asImageBitmap()
     Box(
         modifier = Modifier
-            .clickable { /* Handle news item click */ }
+            .clickable {
+                itemOnClick(context, true, newsItem.id)
+            }
             .border(width = 2.dp, color = Orange, shape = RoundedCornerShape(20.dp))
             .padding(8.dp)
             .width(150.dp)
@@ -337,4 +344,11 @@ fun TechSupportSection(){
         }
     }
     }
+}
+private fun itemOnClick(context: Context, isNews: Boolean, id: Int){
+    val intent = Intent(context, NewsOnSalesActivity::class.java)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    intent.putExtra("EXTRA_IS_NEWS",isNews)
+    intent.putExtra("EXTRA_INDEX",id)
+    context.startActivity(intent)
 }

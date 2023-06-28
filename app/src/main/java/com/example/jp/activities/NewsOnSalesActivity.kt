@@ -1,7 +1,6 @@
 package com.example.jp.activities
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
@@ -9,6 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.room.Room
+import com.example.jp.NewsOnSaleScreen
 import com.example.jp.ProfileScreen
 import com.example.jp.data.NewsOnSalesDatabaseManager
 import com.example.jp.data.products.Products
@@ -17,14 +17,10 @@ import com.example.jp.data.news.News
 import com.example.jp.data.news.NewsDatabase
 import com.example.jp.data.onSale.OnSale
 import com.example.jp.data.onSale.OnSaleDatabase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ProfileActivity : ComponentActivity() {
-
-
+class NewsOnSalesActivity : ComponentActivity() {
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +42,7 @@ class ProfileActivity : ComponentActivity() {
                     onSaleState.value = onSale
                 }
             }
-            ProfileScreen(newsState.value, onSaleState, applicationContext)
+            NewsOnSaleScreen(newsState, onSaleState, applicationContext, intent.getIntExtra("EXTRA_INDEX", 0), intent.getBooleanExtra("EXTRA_IS_NEWS", true))
         }
     }
 }

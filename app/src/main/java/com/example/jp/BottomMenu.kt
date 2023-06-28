@@ -28,7 +28,8 @@ fun BottomMenu(
     activeHighlightColor: Color = ButtonDarkOrange,
     activeTextColor: Color = TextWhite,
     inactiveTextColor: Color = AquaBlue,
-    initialSelectedItemIndex: Int = 0
+    initialSelectedItemIndex: Int = 0,
+    context: Context
 ) {
     var selectedItemIndex by remember {
         mutableStateOf(initialSelectedItemIndex)
@@ -50,9 +51,11 @@ fun BottomMenu(
                 inactiveTextColor = inactiveTextColor,
             ) {
                 selectedItemIndex = index
-
-                val intent = Intent(context, item.activityClass)
+                if (item.isActive){
+                val intent = Intent(context, item.activityClass.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
+                }
             }
         }
     }
