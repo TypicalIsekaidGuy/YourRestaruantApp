@@ -1,13 +1,18 @@
 package com.example.jp.data.news
 
+
 import android.content.Context
+import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
 import androidx.room.*
 import com.example.jp.data.Converters
 import com.example.jp.data.news.NewsDao
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Database(
     entities = [News::class],
-    version = 1
+    version = 4
 )
 @TypeConverters(Converters::class)
 abstract class NewsDatabase: RoomDatabase() {
@@ -16,10 +21,10 @@ abstract class NewsDatabase: RoomDatabase() {
 
     companion object {
         @Volatile
-        private var instance: NewsDatabase? = null
+        var instance: NewsDatabase? = null
 
         fun getInstance(context: Context): NewsDatabase {
-            return instance ?: synchronized(this) {
+            if(instance == null){
                 val db = Room.databaseBuilder(
                     context.applicationContext,
                     NewsDatabase::class.java,
@@ -29,8 +34,8 @@ abstract class NewsDatabase: RoomDatabase() {
                     .createFromAsset("Data/News.db")
                     .build()
                 instance = db
-                db
             }
+            return instance as NewsDatabase
         }
     }
 }

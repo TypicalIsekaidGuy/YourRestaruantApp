@@ -27,8 +27,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jp.activities.BinActivity
 import com.example.jp.activities.MenuActivity
 import com.example.jp.activities.NewsOnSalesActivity
+import com.example.jp.activities.ProfileActivity
 import com.example.jp.data.news.News
 import com.example.jp.data.onSale.OnSale
 import com.example.jp.data.products.Products
@@ -37,7 +39,7 @@ import java.util.function.BinaryOperator
 
 @ExperimentalFoundationApi
 @Composable
-fun ProfileScreen(db: List<News>, db2: MutableState<List<OnSale>>, context: Context){
+fun ProfileScreen(db: List<News>, db2: List<OnSale>, context: Context){
     Box(
         modifier = Modifier
             .background(DeepDark)
@@ -58,7 +60,7 @@ fun ProfileScreen(db: List<News>, db2: MutableState<List<OnSale>>, context: Cont
                 modifier = Modifier.fillMaxWidth()
             ) {
                 item {
-                    OnSaleSection(db2.component1(),context)
+                    OnSaleSection(db2,context)
                 }
                 item {
                     NewsSection(db,context)
@@ -71,11 +73,9 @@ fun ProfileScreen(db: List<News>, db2: MutableState<List<OnSale>>, context: Cont
 
         BottomMenu(items = listOf(
             BottomMenuContent("Menu", R.drawable.pizza_24, true, MenuActivity::class),
-            BottomMenuContent("Meditate", R.drawable.ic_launcher_background, false,MenuActivity::class),
-            BottomMenuContent("Sleep", R.drawable.ic_launcher_background, false, MenuActivity::class),
-            BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24, false,MenuActivity::class),
-            BottomMenuContent("Profile", R.drawable.face_24, false, MenuActivity::class),
-        ), modifier = Modifier.align(Alignment.BottomCenter), context = context, initialSelectedItemIndex = 4)
+            BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24, true,BinActivity::class),
+            BottomMenuContent("Profile", R.drawable.face_24, false, ProfileActivity::class),
+        ), modifier = Modifier.align(Alignment.BottomCenter), context = context, initialSelectedItemIndex = 2)
     }
 }
 
@@ -112,7 +112,7 @@ fun DeliveryOptions(
         modifier = Modifier
             .fillMaxWidth()
             .padding(40.dp)
-            .padding(top = 50.dp)
+            .padding(top = 30.dp)
     ) {
         Row(
             modifier = Modifier
@@ -158,7 +158,7 @@ fun DeliveryOptions(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 35.dp)
-            .padding(top = 140.dp)
+            .padding(top = 120.dp)
             .padding(start = 5.dp)
     ) {
         Row(
@@ -221,7 +221,7 @@ fun OnSaleItem(OnSaleItem: OnSale, context: Context) {
     val imageBitmap: ImageBitmap? = bitmap?.asImageBitmap()
     Box(
         modifier = Modifier
-            .clickable { itemOnClick(context, true, OnSaleItem.id) }
+            .clickable { itemOnClick(context, true, OnSaleItem.id - 1) }
             .border(width = 2.dp, color = Orange, shape = RoundedCornerShape(20.dp))
             .padding(8.dp)
             .width(150.dp)
@@ -282,7 +282,7 @@ fun NewsItem(newsItem: News, context: Context) {
     Box(
         modifier = Modifier
             .clickable {
-                itemOnClick(context, true, newsItem.id)
+                itemOnClick(context, true, newsItem.id-1)
             }
             .border(width = 2.dp, color = Orange, shape = RoundedCornerShape(20.dp))
             .padding(8.dp)

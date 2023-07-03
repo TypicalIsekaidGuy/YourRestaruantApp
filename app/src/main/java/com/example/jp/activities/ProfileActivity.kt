@@ -1,18 +1,12 @@
 package com.example.jp.activities
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.room.Room
 import com.example.jp.ProfileScreen
-import com.example.jp.data.NewsOnSalesDatabaseManager
-import com.example.jp.data.products.Products
-import com.example.jp.data.products.ProductsDatabase
 import com.example.jp.data.news.News
 import com.example.jp.data.news.NewsDatabase
 import com.example.jp.data.onSale.OnSale
@@ -24,29 +18,40 @@ import kotlinx.coroutines.withContext
 
 class ProfileActivity : ComponentActivity() {
 
-
+companion object{
+    var news: List<News>? = null
+    var OnSales: List<OnSale>? = null
+    fun getNews(context: Context): List<News>{
+        if(news==null)
+            news = NewsDatabase.getInstance(context.applicationContext).newsDao.getAllProducts()
+        return news!!
+    }
+    fun getOnSales(context: Context): List<OnSale>{
+        if(OnSales==null)
+            OnSales = OnSaleDatabase.getInstance(context.applicationContext).onSaleDao.getAllProducts()
+        return OnSales!!
+    }
+}
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val newsState = mutableStateOf(emptyList<News>())
+        val onSaleState = mutableStateOf(emptyList<OnSale>())
+
+        val scope = CoroutineScope(Dispatchers.Main)
+
+        scope.launch {
+            val news = withContext(Dispatchers.IO) {
+                getNews(applicationContext)
+            }
+            val onSale = withContext(Dispatchers.IO) {
+                getOnSales(applicationContext)
+            }
+            onSaleState.value = onSale
+            newsState.value = news
+        }
         setContent {
-
-            val newsState = remember { mutableStateOf(emptyList<News>()) }
-            val onSaleState = remember { mutableStateOf(emptyList<OnSale>()) }
-
-            LaunchedEffect(Unit) {
-                withContext(Dispatchers.IO) {
-                    val news = NewsOnSalesDatabaseManager.getNewsDatabase(applicationContext).newsDao.getAllProducts()
-                    newsState.value = news
-                }
-            }
-
-            LaunchedEffect(Unit) {
-                withContext(Dispatchers.IO) {
-                    val onSale = NewsOnSalesDatabaseManager.getOnSaleDatabase(applicationContext).onSaleDao.getAllProducts()
-                    onSaleState.value = onSale
-                }
-            }
-            ProfileScreen(newsState.value, onSaleState, applicationContext)
+            ProfileScreen(newsState.value, onSaleState.value, applicationContext)
         }
     }
 }

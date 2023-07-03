@@ -4,47 +4,61 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jp.activities.BinActivity
 import com.example.jp.activities.MenuActivity
 import com.example.jp.activities.ProfileActivity
+import com.example.jp.data.bin.BinDao
+import com.example.jp.data.products.Bin
 import com.example.jp.data.products.Products
 import com.example.jp.ui.theme.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @ExperimentalFoundationApi
 @Composable
-fun MenuScreen(db: MutableState<List<Products>>, context: Context){
+fun MenuScreen(db: List<Products>, chipDB: List<Pair<String,Int>>, context: Context, dao: BinDao){
     Box(
         modifier = Modifier
             .background(DeepDark)
             .fillMaxSize()
     ){
+        var selectedChipIndex by remember {
+            mutableStateOf(1)
+        }
         MenuTopBar()
-        ChipSection(chips = listOf("Big Pizza", "Small Pizza", "Depression","burgir","sticker"))
-        FeatureSection(features = db.component1())
+        FeatureSection(features = db,selectedChipIndex, dao)
+        ChipSection(chipDB, onChipSelected = {index -> selectedChipIndex = index })
         BottomMenu(items = listOf(
             BottomMenuContent("Menu", R.drawable.pizza_24, false, MenuActivity::class),
-            BottomMenuContent("Meditate", R.drawable.ic_launcher_background,false, MenuActivity::class),
-            BottomMenuContent("Sleep", R.drawable.ic_launcher_background,false, MenuActivity::class),
-            BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24,false, MenuActivity::class),
-            BottomMenuContent("Profile", R.drawable.face_24, true, ProfileActivity::class),
+            BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24,true, BinActivity::class),
+            BottomMenuContent("Profile", R.drawable.face_24, true, ProfileActivity::class)
         ), modifier = Modifier.align(Alignment.BottomCenter), context = context, initialSelectedItemIndex = 0)
     }
 }
@@ -106,7 +120,7 @@ fun MenuTopBar(){
             .padding(vertical = 15.dp)
     ){
         Text(
-            text = "Меню",
+            text = "Menu",
             color = TextWhite,
             fontFamily = FontFamily.SansSerif,
             fontSize = 30.sp,
@@ -119,107 +133,12 @@ fun MenuTopBar(){
 }
 
 @Composable
-fun ChoosingDestination(){
-/*    Card(
-        modifier = Modifier
-            .clip(RoundedCornerShape(30.dp))
-            .padding(vertical = 70.dp)
-            .background(TextWhite)
-            .fillMaxWidth()
-    ){
-        Card(
-            modifier = Modifier
-                .clip(RoundedCornerShape(30.dp))
-                .size(width = 50.dp, height = 20.dp)
-                .padding(vertical = 70.dp)
-                .background(Color.Black)
-        ){
-
-        }
-    }*/
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 70.dp, horizontal = 10.dp)
-            .background(TextWhite, shape = RoundedCornerShape(10.dp))
-    ){
-        Column() {
-
-            Row(
-            ){
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .clickable { }
-                        .background(Color.Black, shape = RoundedCornerShape(5.dp))
-                        .padding(horizontal = 20.dp)
-                ){
-                    Text(text = "На доставку",
-                        color = TextWhite,
-                        fontFamily = FontFamily.SansSerif,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .align(Alignment.Center))
-                }
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .clickable { }
-                        .background(Color.Black, shape = RoundedCornerShape(5.dp))
-                        .padding(horizontal = 20.dp)
-                ){
-                    Text(text = "В зале",
-                        color = TextWhite,
-                        fontFamily = FontFamily.SansSerif,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .align(Alignment.Center))
-                }
-            }
-
-            Row(
-            ){
-                Box(
-                    modifier = Modifier
-                        .clickable { }
-                        .background(Color.Black)
-                        .padding(bottom = 15.dp)
-                        .clip(RoundedCornerShape(30.dp))
-                ){
-                    Text(text = "На доставку",
-                        color = TextWhite,
-                        fontFamily = FontFamily.SansSerif,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .align(Alignment.Center))
-                }
-                Box(
-                    modifier = Modifier
-                        .clickable { }
-                        .background(Color.Black)
-                        .padding(start = 15.dp)
-                ){
-                    Text(text = "В зале",
-                        color = TextWhite,
-                        fontFamily = FontFamily.SansSerif,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .align(Alignment.Center))
-                }
-            }
-        }
-    }
-}
-
-@Composable
 fun ChipSection(
-    chips: List<String>
-) {
+    chips: List<Pair<String,Int>>,onChipSelected: (Int) -> Unit){
     var selectedChipIndex by remember {
         mutableStateOf(0)
     }
-    Box(modifier = Modifier.padding(vertical = 170.dp)){
+    Box(modifier = Modifier.padding(vertical = 100.dp).padding(end = 15.dp)){
     LazyRow {
         items(chips.size) {
             Box(
@@ -228,7 +147,7 @@ fun ChipSection(
                     .padding(start = 15.dp, top = 15.dp, bottom = 15.dp)
                     .clickable {
                         selectedChipIndex = it
-                        Log.d("HELLLO",selectedChipIndex.toString())
+                        onChipSelected(chips[it].second-1)
                     }
                     .clip(RoundedCornerShape(10.dp))
                     .background(
@@ -238,85 +157,45 @@ fun ChipSection(
                     )
                     .padding(15.dp)
             ) {
-                Text(text = chips[it],
+                Text(text = chips[it].first,
                     color = if (selectedChipIndex == it) TextSelectedOrange else TextGray)
             }
         }
     }}
 }
 
-@Composable
-fun CurrentMeditation(
-    color: Color = LightRed
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .padding(15.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .background(color)
-            .padding(horizontal = 15.dp, vertical = 20.dp)
-            .fillMaxWidth()
-    ) {
-        Column {
-            Text(
-                text = "Daily Thought",
-                style = MaterialTheme.typography.h2
-            )
-            Text(
-                text = "Meditation • 3-10 min",
-                style = MaterialTheme.typography.body1,
-                color = TextWhite
-            )
-        }
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(ButtonDarkOrange)
-                .padding(10.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = "Play",
-                tint = TextWhite,
-                modifier = Modifier.size(16.dp)
-            )
-        }
-    }
-}
 @ExperimentalFoundationApi
 @Composable
-fun FeatureSection(features: List<Products>) {
-    val scrollState = rememberLazyListState()
+fun FeatureSection(features: List<Products>,  selectedChipIndex: Int, db: BinDao) {
+    val scrollState = rememberLazyGridState()
     /*val features by*/
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight() // Expand to full height
-            .padding(top = 250.dp),// , // Adjust the padding as needed
+            .padding(top = 180.dp),// , // Adjust the padding as needed
         verticalArrangement = Arrangement.Bottom // Align content to the bottom
     ) {
+        Log.d("feafa",features.size.toString())
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(1),
             contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp, bottom = 80.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            state = scrollState
         ) {
             items(features.size) {
-                FeatureItem(feature = features[it])
+                FeatureItem(db = db, feature = features[it])
+                LaunchedEffect(selectedChipIndex) {
+                    val id = selectedChipIndex.coerceIn(0, features.size - 1)
+                    scrollState.animateScrollToItem(id)
+                }
             }
         }
     }
-
-/*    LaunchedEffect(selectedChipInt) {
-        val itemIndex = selectedChipInt.coerceIn(0, features.size - 1)
-        scrollState.animateScrollToItem(itemIndex)
-    }*/
 }
 @Composable
-fun FeatureItem(feature: Products) {
+fun FeatureItem(db: BinDao, feature: Products) {
     val bitmap: Bitmap? = BitmapFactory.decodeByteArray(feature.icon, 0, feature.icon.size)
     val imageBitmap: ImageBitmap? = bitmap?.asImageBitmap()
     Row(
@@ -341,13 +220,16 @@ fun FeatureItem(feature: Products) {
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(start = 16.dp)
+                .padding(start = 16.dp, top = 10.dp)
         ) {
-            Text(text = feature.tittle, color = TextWhite)
+            Text(text = feature.tittle, color = TextWhite, fontSize = 20.sp)
             Text(text = feature.description,color = TextWhite, modifier = Modifier.padding())
             Box(modifier = Modifier
                 .padding(vertical = 6.dp)
-                .clickable { /* Handle button click */ }){
+                .clickable {
+
+                    insertInBin(db, feature)
+                     }){
             Box(
                 modifier = Modifier
                     .background(ButtonDarkOrange, shape = CircleShape)
@@ -361,6 +243,29 @@ fun FeatureItem(feature: Products) {
                 )
             }}
         }
+    }
+}
+fun insertInBin(db: BinDao, products: Products){
+    val scope = CoroutineScope(Dispatchers.IO)
+
+    scope.launch {
+        val list = db.getAllProducts()
+        var mutableList = mutableListOf<String>()
+        var foundProduct: Bin? = null
+        for (i in list){
+            mutableList.add(i.tittle)
+            if (i.tittle == products.tittle) {
+                foundProduct = i
+            }
+
+        }
+        if(foundProduct!=null){
+            db.deleteProduct(Bin(foundProduct.id, products.id,products.tittle,products.icon,products.price,foundProduct.quantity))
+            db.insertProduct(Bin(foundProduct.id, products.id,products.tittle,products.icon,products.price,foundProduct.quantity+1))
+        }
+        else
+            db.insertProduct(Bin(list.size, products.id,products.tittle,products.icon,products.price,1))
+        Log.d("YESSSSS",db.getAllProducts().size.toString())
     }
 }
 @Composable

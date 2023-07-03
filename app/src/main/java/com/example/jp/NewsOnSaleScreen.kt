@@ -1,6 +1,7 @@
 package com.example.jp
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
@@ -27,6 +28,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jp.activities.MenuActivity
+import com.example.jp.activities.NewsOnSalesActivity
+import com.example.jp.activities.ProfileActivity
 import com.example.jp.data.news.News
 import com.example.jp.data.onSale.OnSale
 import com.example.jp.data.products.Products
@@ -35,8 +38,8 @@ import com.example.jp.ui.theme.*
 @ExperimentalFoundationApi
 @Composable
 fun NewsOnSaleScreen(
-    db: MutableState<List<News>>,
-    db2: MutableState<List<OnSale>>,
+    db: List<News>,
+    db2: List<OnSale>,
     context: Context,
     index: Int,
     isNews: Boolean
@@ -46,20 +49,17 @@ fun NewsOnSaleScreen(
             .background(DeepDark)
             .fillMaxSize()
     ) {
-        Log.d("ssssssssss",db.value.firstOrNull().toString())
-        Log.d("ssssssssss",db2.component1().toString())
-        Log.d("ssssssssss",db2.component1()[index].toString())
         val byteArray: ByteArray
         val tittle: String
         val description: String
         if (isNews){
-            val item = db.component1()[index]
+            val item = db[index]
             byteArray = item.image
             tittle = item.tittle
             description = item.description
         }
         else{
-            val item = db2.component1()[index]
+            val item = db2[index]
             byteArray = item.image
             tittle = item.tittle
             description = item.description
@@ -85,7 +85,7 @@ fun NewsOnSaleScreen(
         ) {
             // Exit Button
             IconButton(
-                onClick = { /* Handle exit button click */ },
+                onClick = { context.startActivity(Intent(context, ProfileActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) },
                 modifier = Modifier.align(Alignment.End)
             ) {
                 Icon(
@@ -117,7 +117,7 @@ fun NewsOnSaleScreen(
                     fontFamily = FontFamily.SansSerif
                 ),
                 textAlign = TextAlign.Start,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp).align(Alignment.Start)
             )
 
             // Other content goes here...

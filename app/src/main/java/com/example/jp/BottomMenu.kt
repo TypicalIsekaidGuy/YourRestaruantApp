@@ -52,8 +52,7 @@ fun BottomMenu(
             ) {
                 selectedItemIndex = index
                 if (item.isActive){
-                val intent = Intent(context, item.activityClass.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                val intent = Intent(context, item.activityClass.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
                 }
             }
