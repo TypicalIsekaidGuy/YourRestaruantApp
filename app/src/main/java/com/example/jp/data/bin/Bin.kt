@@ -9,9 +9,6 @@ import androidx.room.PrimaryKey
 data class Bin(
     @PrimaryKey
     val id: Int,
-    val productsId: Int,
-    val tittle: String,
-    val image: ByteArray,
-    val price: Int,
+    val product: Products,
     val quantity: Int
 )

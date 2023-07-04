@@ -82,4 +82,7 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.44")
     implementation "androidx.room:room-runtime:2.4.0"
     kapt "androidx.room:room-compiler:2.4.0"
+
+
+    implementation 'ru.yoomoney.sdk.kassa.payments:yookassa-android-sdk:6.5.0'
 }

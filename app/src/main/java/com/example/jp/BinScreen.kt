@@ -44,7 +44,32 @@ import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun BinScreen(dao: BinDao, db: MutableState<List<Bin>>, total: Int, context: Context, supplements:List<Products>){
+fun BinScreen(dao: BinDao, db: MutableState<MutableList<Bin>>, context: Context, supplements:List<Products>){
+    val total: State<Int> = remember {
+        derivedStateOf {
+            db.value.sumOf { it.product.price*it.quantity }
+        }
+    }
+    val saucesCount: State<Int> = remember {
+        derivedStateOf {
+            db.value.count { it.product.type == "Sause" }
+        }
+    }
+    val saucesTotal: State<Int> = remember {
+        derivedStateOf {
+            db.value.sumOf { if (it.product.type =="Sause") it.product.price*it.quantity else 0 }
+        }
+    }
+    val desertsCount: State<Int> = remember {
+        derivedStateOf {
+            db.value.count { it.product.type == "Desert" }
+        }
+    }
+    val desertsTotal: State<Int> = remember {
+        derivedStateOf {
+            db.value.sumOf { if (it.product.type =="Desert") it.product.price*it.quantity else 0 }
+        }
+    }
     Box(
         modifier = Modifier
             .background(DeepDark)
@@ -53,24 +78,18 @@ fun BinScreen(dao: BinDao, db: MutableState<List<Bin>>, total: Int, context: Con
         BinTopBar()
         /*if(db.isEmpty())*/
         LazyColumn (modifier = Modifier.padding(top = 70.dp)){
-/*            val list =
-                listOf(
-                    Bin(1,1,"Pizza",R.drawable.pizza1,100,1),
-                    Bin(2,2,"Small Pizza",R.drawable.pizza1,200,1),
-                    Bin(3,3,"Big Pizza",R.drawable.pizza2,300,1)
-                )*/
             item {
-                BinSection(dao, db,total)
+                BinSection(dao, db,total.value)
             }
             item {
-                SupplementsSection(supplements)
+                SupplementsSection(dao,db,supplements)
             }
             item {
-                TotalSection(3, 200, 2, 400, false,100)
+                TotalSection(saucesCount.value,saucesTotal.value, desertsCount.value, desertsTotal.value, false,100)
             }
         }
         Column (modifier = Modifier.align(Alignment.BottomCenter)){
-            BuyButton(total)
+            BuyButton(total.value)
             BottomMenu(items = listOf(
                 BottomMenuContent("Menu", R.drawable.pizza_24, true, MenuActivity::class),
                 BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24,false, MenuActivity::class),
@@ -101,7 +120,7 @@ fun BinTopBar(){
     }
 }
 @Composable
-fun BinSection(dao: BinDao, items: MutableState<List<Bin>>,total: Int){
+fun BinSection(dao: BinDao, items: MutableState<MutableList<Bin>>,total: Int){
     Column{
         Box(
             contentAlignment = Alignment.Center,
@@ -119,14 +138,14 @@ fun BinSection(dao: BinDao, items: MutableState<List<Bin>>,total: Int){
             )
         }
         items.value.forEach {bin ->
-            BinItem(dao, bin)
+            BinItem(dao,items, bin)
 
         }
     }
 }
 @Composable
-fun BinItem(dao:BinDao, binItem: Bin) {
-    val bitmap: Bitmap? = BitmapFactory.decodeByteArray(binItem.image, 0, binItem.image.size)
+fun BinItem(dao:BinDao,db: MutableState<MutableList<Bin>>, binItem: Bin) {
+    val bitmap: Bitmap? = BitmapFactory.decodeByteArray(binItem.product.icon, 0, binItem.product.icon.size)
     val imageBitmap: ImageBitmap? = bitmap?.asImageBitmap()
     Column(modifier = Modifier.padding(bottom = 30.dp)) {
         Row(
@@ -144,35 +163,35 @@ fun BinItem(dao:BinDao, binItem: Bin) {
             }
             }
             Column(modifier = Modifier.padding(start = 20.dp)) {
-                Text(text = binItem.tittle,
+                Text(text = binItem.product.tittle,
                     color = TextWhite,
                     fontSize = 28.sp,
                     modifier = Modifier.padding(top = 15.dp))
             }
         }
         Row(modifier = Modifier.padding(horizontal = 30.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(text = "${binItem.price*binItem.quantity}$",
+            Text(text = "${binItem.product.price*binItem.quantity}$",
                 color = TextWhite,
                 fontSize = 20.sp,
                 modifier = Modifier.padding(start = 16.dp),
                 textAlign = TextAlign.Center)
-            PlusMinusButton(dao, binItem)
+            PlusMinusButton(dao,db, binItem)
         }
     }
 }
 
-@Composable fun PlusMinusButton(dao: BinDao, binItem: Bin){
-    var quantity = remember { mutableStateOf(binItem.quantity) }
+@Composable fun PlusMinusButton(dao: BinDao,db: MutableState<MutableList<Bin>>, binItem: Bin){
     Box{
     Box(modifier = Modifier
-        .padding(vertical = 6.dp).padding(start = 10.dp)){
+        .padding(vertical = 6.dp)
+        .padding(start = 10.dp)){
         Box(
             modifier = Modifier
                 .background(ButtonDarkOrange, shape = CircleShape)
                 .padding(vertical = 6.dp, horizontal = 30.dp)
         ) {
             Text(
-                text = quantity.value.toString(),
+                text = binItem.quantity.toString(),
                 color = TextWhite,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold
@@ -183,8 +202,8 @@ fun BinItem(dao:BinDao, binItem: Bin) {
         Box(modifier = Modifier
             .padding(vertical = 6.dp)
             .clickable {
-                deleteItem(dao,binItem.id)
-            quantity.value--}){
+                deleteItem(dao, db, db.value.indexOf(binItem))
+            }){
             Box(
                 modifier = Modifier
                     .background(ButtonDarkOrange, shape = CircleShape)
@@ -199,10 +218,9 @@ fun BinItem(dao:BinDao, binItem: Bin) {
             }
         }
     Box(modifier = Modifier
-        .padding(start = (52 + (quantity.value.toString().length-1)*10).dp)
+        .padding(start = (52 + (binItem.quantity.toString().length - 1) * 10).dp)
         .padding(vertical = 6.dp)
-        .clickable { insertItem(dao,binItem.id)
-            quantity.value++}){
+        .clickable { insertItem(dao, db, db.value.indexOf(binItem)) }){
         Box(
             modifier = Modifier
                 .background(ButtonDarkOrange, shape = CircleShape)
@@ -218,34 +236,58 @@ fun BinItem(dao:BinDao, binItem: Bin) {
     }
     }
 }
-fun insertItem(dao: BinDao, id: Int){
+fun insertItem(dao: BinDao,db: MutableState<MutableList<Bin>>, id: Int){
 
     val scope = CoroutineScope(Dispatchers.IO)
 
     scope.launch {
         val list = dao.getAllProducts()
         val bin = list[id]
-        if(bin.quantity>1){
-            dao.updateProduct(Bin(bin.id, bin.id,bin.tittle,bin.image,bin.price,bin.quantity+1))
+        val newBin = Bin(bin.id, bin.product, bin.quantity + 1)
+        dao.updateProduct(newBin)
+        val updatedList = db.value.toMutableList().apply {
+            val index = indexOfFirst { it.id == newBin.id }
+            if (index != -1) {
+                set(index, newBin)
+            }
         }
+        db.value = updatedList
     }
 }
-fun deleteItem(dao: BinDao, id: Int){
+fun deleteItem(dao: BinDao,db: MutableState<MutableList<Bin>>, id: Int){
     val scope = CoroutineScope(Dispatchers.IO)
 
     scope.launch {
-        val list = dao.getAllProducts()
-        val bin = list[id-1]
-        if(bin.quantity>1){
-            dao.deleteProduct(Bin(bin.id, bin.id,bin.tittle,bin.image,bin.price,bin.quantity))
-            dao.insertProduct(Bin(bin.id, bin.id,bin.tittle,bin.image,bin.price,bin.quantity-1))
+        val list = db.value as List<Bin>
+            val bin = list[id]
+            if(bin.quantity>1){
+                val newBin = Bin(bin.id, bin.product, bin.quantity-1)
+                if(dao.getAllProducts().size>id){
+                    dao.updateProduct(newBin)
+                }
+                val updatedList = db.value.toMutableList().apply {
+                    val index = indexOfFirst { it.id == newBin.id }
+                    if (index != -1) {
+                        set(index, newBin)
+                    }
+                }
+                db.value = updatedList
+            }
+            else
+            {
+                val updatedList = db.value.toMutableList().apply {
+                    remove(bin)
+                }
+                db.value=updatedList
+
+                if(dao.getAllProducts().size>id)
+                    dao.deleteProduct(bin)
+            }
         }
-        else
-            dao.deleteProduct(bin)
+
     }
-}
 @Composable
-fun SupplementsSection(supplements: List<Products>){
+fun SupplementsSection(dao: BinDao,db: MutableState<MutableList<Bin>>,supplements: List<Products>){
     Column{
         Box(
             contentAlignment = Alignment.Center,
@@ -264,14 +306,14 @@ fun SupplementsSection(supplements: List<Products>){
         }
         LazyRow(/*rows = GridCells.Fixed(1)*/){
             items(supplements.size){
-                SupplementItem(supplementItem = supplements[it])
+                SupplementItem(dao,db,supplementItem = supplements[it])
             }
         }
     }
 }
 
 @Composable
-fun SupplementItem(supplementItem: Products) {
+fun SupplementItem(dao: BinDao,db: MutableState<MutableList<Bin>>,supplementItem: Products) {
     val bitmap: Bitmap? = BitmapFactory.decodeByteArray(supplementItem.icon, 0, supplementItem.icon.size)
     val imageBitmap: ImageBitmap? = bitmap?.asImageBitmap()
     Row() {
@@ -288,7 +330,7 @@ fun SupplementItem(supplementItem: Products) {
             Text(text = supplementItem.tittle, color = TextWhite, fontSize = 20.sp)
             Box(modifier = Modifier
                 .padding(vertical = 6.dp)
-                .clickable { /* Handle button click */ }){
+                .clickable { createItem(dao,db,supplementItem) }){
                 Box(
                     modifier = Modifier
                         .background(ButtonDarkOrange, shape = CircleShape)
@@ -302,6 +344,32 @@ fun SupplementItem(supplementItem: Products) {
                     )
                 }}
         }
+    }
+}
+fun createItem(dao: BinDao,db: MutableState<MutableList<Bin>>, product: Products){
+
+    val scope = CoroutineScope(Dispatchers.IO)
+
+    scope.launch {
+        var products: MutableList<Products> = mutableListOf()
+        for (i in db.value){
+            products.add(i.product)
+        }
+        if(!products.contains(product)){
+            var id: Int
+            if(db.value.isEmpty())
+                id = 0
+            else
+                id = db.value.last().id+1
+            val newBin = Bin(id, product,1)
+
+            dao.insertProduct(newBin)
+            val updatedList = db.value.toMutableList().apply {
+                add(newBin)
+            }
+            db.value = updatedList
+        }
+
     }
 }
 @Composable

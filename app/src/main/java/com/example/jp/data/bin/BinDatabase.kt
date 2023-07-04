@@ -12,7 +12,7 @@ import com.example.jp.data.products.Bin
 
 @Database(
     entities = [Bin::class],
-    version = 2
+    version = 4
 )
 @TypeConverters(Converters::class)
 abstract class BinDatabase: RoomDatabase() {

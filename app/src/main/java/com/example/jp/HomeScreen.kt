@@ -253,18 +253,18 @@ fun insertInBin(db: BinDao, products: Products){
         var mutableList = mutableListOf<String>()
         var foundProduct: Bin? = null
         for (i in list){
-            mutableList.add(i.tittle)
-            if (i.tittle == products.tittle) {
+            mutableList.add(i.product.tittle)
+            if (i.product.tittle == products.tittle) {
                 foundProduct = i
             }
 
         }
         if(foundProduct!=null){
-            db.deleteProduct(Bin(foundProduct.id, products.id,products.tittle,products.icon,products.price,foundProduct.quantity))
-            db.insertProduct(Bin(foundProduct.id, products.id,products.tittle,products.icon,products.price,foundProduct.quantity+1))
+            db.deleteProduct(Bin(foundProduct.id, products, foundProduct.quantity))
+            db.insertProduct(Bin(foundProduct.id, products, foundProduct.quantity+1))
         }
         else
-            db.insertProduct(Bin(list.size, products.id,products.tittle,products.icon,products.price,1))
+            db.insertProduct(Bin(list.size, products,1))
         Log.d("YESSSSS",db.getAllProducts().size.toString())
     }
 }
