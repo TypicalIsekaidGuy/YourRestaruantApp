@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -89,7 +90,7 @@ fun BinScreen(dao: BinDao, db: MutableState<MutableList<Bin>>, context: Context,
             }
         }
         Column (modifier = Modifier.align(Alignment.BottomCenter)){
-            BuyButton(total.value)
+            BuyButton(context, dao, db, total.value)
             BottomMenu(items = listOf(
                 BottomMenuContent("Menu", R.drawable.pizza_24, true, MenuActivity::class),
                 BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24,false, MenuActivity::class),
@@ -405,7 +406,7 @@ fun TotalItem(text1: String,text2: String){
     }
 }
 @Composable /*this could be scrollable so i need to fix it*/
-fun BuyButton(total: Int){
+fun BuyButton(context: Context,dao: BinDao, db: MutableState<MutableList<Bin>>, total: Int){
     Box (modifier = Modifier
         .background(DeepDark)){
         Column(modifier = Modifier.background(DeepDark)){
@@ -421,7 +422,7 @@ fun BuyButton(total: Int){
                         .background(ButtonDarkOrange, shape = CircleShape)
                         .padding(vertical = 6.dp, horizontal = 15.dp)
                         .fillMaxWidth()
-                        .clickable { }
+                        .clickable { buyBinProducts(context,dao,db, total) }
                 ) {
                     Text(
                         text = "Buy for $total $",
@@ -433,4 +434,18 @@ fun BuyButton(total: Int){
                 }
         }
     }
+}
+fun buyBinProducts(context: Context, dao: BinDao,db: MutableState<MutableList<Bin>>, total: Int){
+    val text = "Sucsessful purchase for $total$"
+    val duration = Toast.LENGTH_SHORT
+
+    Toast.makeText(context, text, duration).show()
+
+    val scope = CoroutineScope(Dispatchers.IO)
+    scope.launch {
+        for (i in dao.getAllProducts()){
+            dao.deleteProduct(i)
+        }
+    }
+    db.value = mutableListOf()
 }
