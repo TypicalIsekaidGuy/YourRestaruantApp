@@ -12,7 +12,7 @@ class Converters {
     }
 
 
-
+//products is not type that is in sql so i need to convert it in json, kinda makes sense
     @TypeConverter
     fun fromJson(json: String): Products {
         return gson.fromJson(json, Products::class.java)

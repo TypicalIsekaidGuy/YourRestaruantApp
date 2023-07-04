@@ -5,16 +5,11 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.example.jp.BinScreen
-import com.example.jp.NewsOnSaleScreen
-import com.example.jp.data.bin.BinDatabase
-import com.example.jp.data.news.News
-import com.example.jp.data.onSale.OnSale
 import com.example.jp.data.products.Bin
 import com.example.jp.data.products.Products
+import com.example.jp.ui.screen.BinScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -51,6 +46,7 @@ class BinActivity : ComponentActivity() {
             BinScreen(MenuActivity.getBinDao(applicationContext), context = applicationContext, db = binState, supplements = supplementsState.value )
         }
     }
+//a method of yookassa for payment (doesnt work)
 /*    fun startTokenize() {
         val paymentParameters = PaymentParameters(
             amount = Amount(BigDecimal.TEN, Currency.getInstance("RUB")),

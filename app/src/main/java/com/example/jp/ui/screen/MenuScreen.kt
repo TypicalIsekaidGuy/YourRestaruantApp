@@ -1,4 +1,4 @@
-package com.example.jp
+package com.example.jp.ui.screen
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -21,7 +21,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
@@ -29,18 +28,21 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jp.R
 import com.example.jp.activities.BinActivity
 import com.example.jp.activities.MenuActivity
 import com.example.jp.activities.ProfileActivity
 import com.example.jp.data.bin.BinDao
 import com.example.jp.data.products.Bin
 import com.example.jp.data.products.Products
+import com.example.jp.ui.bottom.BottomMenu
+import com.example.jp.ui.bottom.BottomMenuContent
 import com.example.jp.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
+//every screen uses the almost the same structure having a list, a dao and context fro either intent or changing db and other arguments. This needs to be changed
 @ExperimentalFoundationApi
 @Composable
 fun MenuScreen(db: List<Products>, chipDB: List<Pair<String,Int>>, context: Context, dao: BinDao){
@@ -48,13 +50,14 @@ fun MenuScreen(db: List<Products>, chipDB: List<Pair<String,Int>>, context: Cont
         modifier = Modifier
             .background(DeepDark)
             .fillMaxSize()
-    ){
+    ){//i think every thing needs to be in a sort of list or columns and rows for proper design functioning on other devices
         var selectedChipIndex by remember {
             mutableStateOf(1)
         }
-        MenuTopBar()
-        FeatureSection(features = db,selectedChipIndex, dao)
-        ChipSection(chipDB, onChipSelected = {index -> selectedChipIndex = index })
+        // when changing design every padding inside of composables should get rid of
+        MenuTopBar()//needs to be assigned clicks for both bin and search bar also change the color of icons
+        FeatureSection(features = db,selectedChipIndex, dao)// images need to be normal
+        ChipSection(chipDB, onChipSelected = {index -> selectedChipIndex = index })//something wrong with animation scroll: it is focused on the pressed element and doesnt move away
         BottomMenu(items = listOf(
             BottomMenuContent("Menu", R.drawable.pizza_24, false, MenuActivity::class),
             BottomMenuContent("Bin", R.drawable.baseline_shopping_bag_24,true, BinActivity::class),

@@ -1,25 +1,14 @@
 package com.example.jp.activities
 
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageItemInfo
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.room.Room
-import com.example.jp.MenuScreen
+import com.example.jp.ui.screen.MenuScreen
 import com.example.jp.data.bin.BinDao
 import com.example.jp.data.bin.BinDatabase
-import com.example.jp.data.news.News
-import com.example.jp.data.news.NewsDatabase
-import com.example.jp.data.onSale.OnSale
-import com.example.jp.data.onSale.OnSaleDatabase
-import com.example.jp.data.products.ChipTuple
 import com.example.jp.data.products.Products
 import com.example.jp.data.products.ProductsDao
 import com.example.jp.data.products.ProductsDatabase

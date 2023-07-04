@@ -1,4 +1,4 @@
-package com.example.jp
+package com.example.jp.ui.bottom
 
 import kotlin.reflect.KClass
 import android.content.Intent

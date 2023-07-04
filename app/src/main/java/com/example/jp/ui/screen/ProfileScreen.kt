@@ -1,4 +1,4 @@
-package com.example.jp
+package com.example.jp.ui.screen
 
 import android.content.Context
 import android.content.Intent
@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jp.R
 import com.example.jp.activities.BinActivity
 import com.example.jp.activities.MenuActivity
 import com.example.jp.activities.NewsOnSalesActivity
@@ -34,6 +35,8 @@ import com.example.jp.activities.ProfileActivity
 import com.example.jp.data.news.News
 import com.example.jp.data.onSale.OnSale
 import com.example.jp.data.products.Products
+import com.example.jp.ui.bottom.BottomMenu
+import com.example.jp.ui.bottom.BottomMenuContent
 import com.example.jp.ui.theme.*
 import java.util.function.BinaryOperator
 
@@ -66,8 +69,8 @@ fun ProfileScreen(db: List<News>, db2: List<OnSale>, context: Context){
                     NewsSection(db,context)
                 }
                 item {
-                    TechSupportSection()
-                }
+                    TechSupportSection()//need to think what to implement here, ideally some kind of chatting
+                }//also need to add before tech support a map using one of apis
             }
         }
 
@@ -94,8 +97,6 @@ fun ProfileTopBar(){
             fontSize = 30.sp,
             modifier = Modifier
                 .align(Alignment.Center)
-
-
         )
     }
 }

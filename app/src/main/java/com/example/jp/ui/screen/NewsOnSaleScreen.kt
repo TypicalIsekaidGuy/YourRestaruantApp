@@ -1,18 +1,11 @@
-package com.example.jp
+package com.example.jp.ui.screen
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,17 +20,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.jp.activities.MenuActivity
-import com.example.jp.activities.NewsOnSalesActivity
+import com.example.jp.R
 import com.example.jp.activities.ProfileActivity
 import com.example.jp.data.news.News
 import com.example.jp.data.onSale.OnSale
-import com.example.jp.data.products.Products
 import com.example.jp.ui.theme.*
 
 @ExperimentalFoundationApi
 @Composable
-fun NewsOnSaleScreen(
+fun NewsOnSaleScreen(//need to redesign this block both like a screen and also just change some design like description and tittle arrangement
     db: List<News>,
     db2: List<OnSale>,
     context: Context,

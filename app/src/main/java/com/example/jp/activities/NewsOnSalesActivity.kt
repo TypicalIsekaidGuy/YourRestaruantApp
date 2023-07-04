@@ -4,13 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import com.example.jp.NewsOnSaleScreen
-import com.example.jp.data.news.News
-import com.example.jp.data.onSale.OnSale
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.example.jp.ui.screen.NewsOnSaleScreen
 
 class NewsOnSalesActivity : ComponentActivity() {
     @ExperimentalFoundationApi

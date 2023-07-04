@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
 import androidx.compose.runtime.mutableStateOf
-import com.example.jp.ProfileScreen
+import com.example.jp.ui.screen.ProfileScreen
 import com.example.jp.data.news.News
 import com.example.jp.data.news.NewsDatabase
 import com.example.jp.data.onSale.OnSale

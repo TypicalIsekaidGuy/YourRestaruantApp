@@ -9,7 +9,7 @@ import com.example.jp.data.Converters
 import com.example.jp.data.news.News
 import com.example.jp.data.news.NewsDao
 import com.example.jp.data.products.Bin
-
+//Databases for now are used only for the one table, maybe i should fix this
 @Database(
     entities = [Bin::class],
     version = 4
@@ -19,7 +19,7 @@ abstract class BinDatabase: RoomDatabase() {
 
     abstract val binDao: BinDao
 
-    companion object {
+    companion object {//needed everywhere to get the instance to database however works only 1 time so i should change this
         @Volatile
         var instance: BinDatabase? = null
 

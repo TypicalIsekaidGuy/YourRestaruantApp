@@ -5,7 +5,7 @@ import androidx.room.*
 import com.example.jp.data.Converters
 import com.example.jp.data.news.NewsDao
 import com.example.jp.data.news.NewsDatabase
-
+//Databases for now are used only for the one table, maybe i should fix this
 @Database(
     entities = [OnSale::class],
     version = 1
@@ -15,7 +15,7 @@ abstract class OnSaleDatabase: RoomDatabase() {
 
     abstract val onSaleDao: OnSaleDao
 
-    companion object {
+    companion object {//needed everywhere to get the instance to database however works only 1 time so i should change this
         @Volatile
         var instance: OnSaleDatabase? = null
 

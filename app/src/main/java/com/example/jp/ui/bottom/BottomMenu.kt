@@ -1,5 +1,4 @@
-package com.example.jp
-
+package com.example.jp.ui.bottom
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.background
@@ -22,7 +21,7 @@ import com.example.jp.ui.theme.DeepDark
 import com.example.jp.ui.theme.TextWhite
 
 @Composable
-fun BottomMenu(
+fun BottomMenu(//bottom menu are same everywhere perhaps i need to make default values or rearrange architechure
     items: List<BottomMenuContent>,
     modifier: Modifier = Modifier,
     activeHighlightColor: Color = ButtonDarkOrange,
@@ -46,7 +45,6 @@ fun BottomMenu(
             BottomMenuItem(
                 item = item,
                 isSelected = index == selectedItemIndex,
-                activeHighlightColor = activeHighlightColor,
                 activeTextColor = activeTextColor,
                 inactiveTextColor = inactiveTextColor,
             ) {
@@ -64,7 +62,6 @@ fun BottomMenu(
 fun BottomMenuItem(
     item: BottomMenuContent,
     isSelected: Boolean = false,
-    activeHighlightColor: Color = ButtonDarkOrange,
     activeTextColor: Color = TextWhite,
     inactiveTextColor: Color = AquaBlue,
     onItemClick: () -> Unit

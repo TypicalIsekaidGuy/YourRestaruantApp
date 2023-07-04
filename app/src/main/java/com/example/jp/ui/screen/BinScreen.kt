@@ -1,4 +1,4 @@
-package com.example.jp
+package com.example.jp.ui.screen
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -30,11 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jp.R
 import com.example.jp.activities.MenuActivity
 import com.example.jp.activities.ProfileActivity
 import com.example.jp.data.bin.BinDao
 import com.example.jp.data.products.Bin
 import com.example.jp.data.products.Products
+import com.example.jp.ui.bottom.BottomMenu
+import com.example.jp.ui.bottom.BottomMenuContent
 import com.example.jp.ui.theme.ButtonDarkOrange
 import com.example.jp.ui.theme.DeepDark
 import com.example.jp.ui.theme.LighterDark
@@ -45,8 +48,8 @@ import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun BinScreen(dao: BinDao, db: MutableState<MutableList<Bin>>, context: Context, supplements:List<Products>){
-    val total: State<Int> = remember {
+fun BinScreen(dao: BinDao, db: MutableState<MutableList<Bin>>, context: Context, supplements:List<Products>){//the problem with this block that it's design is dynamic
+    val total: State<Int> = remember {//the whole problem with this class is that db is not dynamic enough
         derivedStateOf {
             db.value.sumOf { it.product.price*it.quantity }
         }
@@ -83,7 +86,7 @@ fun BinScreen(dao: BinDao, db: MutableState<MutableList<Bin>>, context: Context,
                 BinSection(dao, db,total.value)
             }
             item {
-                SupplementsSection(dao,db,supplements)
+                SupplementsSection(dao,db,supplements)//supplements should be also a dynamic list or a dynamic db
             }
             item {
                 TotalSection(saucesCount.value,saucesTotal.value, desertsCount.value, desertsTotal.value, false,100)
