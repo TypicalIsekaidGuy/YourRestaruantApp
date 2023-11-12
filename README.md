@@ -35,22 +35,22 @@ Hello! In this repository, you can find my restaurant business emulation app. As
 #### 1. MenuScreen
    - A screen for ordering items. Pressing the add button will add the selected meal to the order in the database.
 
-   ![MenuScreen Screenshot](/images/MenuScreen.png)
+   ![MenuScreen Screenshot](/images/MenuScreen.jpg)
 
 #### 2. ProfileScreen
    - A screen for personal preferences, currently showing ads and new features from the database. These features currently open the NewsScreen.
 
-   ![ProfileScreen Screenshot](/images/ProfileScreen.png)
+   ![ProfileScreen Screenshot](/images/ProfileScreen.jpg)
 
 #### 3. NewsScreen
    - A view for news, ads, or features.
 
-   ![NewsScreen Screenshot](/images/NewsScreen.png)
+   ![NewsScreen Screenshot](/images/NewsScreen.jpg)
 
 #### 4. BinScreen
    - A screen for managing orders. Here, you can delete items from your order, add more items, add desserts, or buy the entire order.
 
-   ![BinScreen Screenshot](/images/BinScreen.png)
+   ![BinScreen Screenshot](/images/BinScreen.jpg)
 
 Feel free to contribute, suggest improvements, or explore the evolution of this restaurant app in its next version!
 
