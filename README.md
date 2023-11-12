@@ -1,12 +1,57 @@
-Hello!
-Here you can find my app that is emulatiing a restaruant buissness.
-This is one of my first projects, so there is a list of things i would like to change in a new version of this app:
-Architecture - the whole app could really use MVVM or MVM kinds of architecture, the only thing that looks good enough
-is database and still it could be better by perhaps creating only one database class.
-Design - it could be redesigned in some places and also arhcitecture of it could be changed.
-This is what i need to do in next repository:
-Databases can be rearranged into one big database, because daos are deviding itself there is no need for a further division
-Need to implement both mvvm and mve or mvi pattern because I need the first one for representing db and other one for correctly providing user with intents that he has. 
-Further redesign is not needed with few exceptions like news on sales screen
-Need to add 2 big apis for project and purhaps fragment for the second: payment (yookassa /stripe) and map (google /mapbox) 
-Need to understand how dagger hilt works because I don't really now
+# RestaurantApp Next Version
+
+Hello! In this repository, you can find my restaurant business emulation app. As one of my first projects, I've identified several areas for improvement in the next version of this app:
+
+## Changes to Implement:
+
+### 1. Architecture
+   - Reorganize the entire app using MVVM or MVM architecture. Currently, the app lacks a clear architectural pattern.
+   - Consider consolidating the database functionality into a single database class for improved organization and efficiency.
+
+### 2. Design
+   - Redesign certain aspects of the user interface for a more modern and cohesive look.
+   - Review and potentially modify the overall app architecture to enhance usability.
+
+### 3. Databases
+   - Rearrange databases into a unified structure. The current separation of DAOs may not be necessary.
+   - Consider creating a single, comprehensive database class for improved management.
+
+### 4. Patterns
+   - Implement both MVVM and another pattern (MVE or MVI). MVVM is essential for representing the database, while the additional pattern will help in correctly providing user intents.
+
+### 5. Redesign
+   - Perform a comprehensive redesign, with specific attention to areas such as the news section on the sales screen.
+
+### 6. API Integration
+   - Add two major APIs to the project:
+      - Payment API (consider Yookassa or Stripe).
+      - Map API (consider Google Maps or Mapbox).
+
+### 7. Technology Integration
+   - Understand and implement Dagger Hilt for dependency injection. Gain proficiency in leveraging its capabilities for better code organization.
+
+### Screens:
+
+#### 1. MenuScreen
+   - A screen for ordering items. Pressing the add button will add the selected meal to the order in the database.
+
+   ![MenuScreen Screenshot](/images/MenuScreen.png)
+
+#### 2. ProfileScreen
+   - A screen for personal preferences, currently showing ads and new features from the database. These features currently open the NewsScreen.
+
+   ![ProfileScreen Screenshot](/images/ProfileScreen.png)
+
+#### 3. NewsScreen
+   - A view for news, ads, or features.
+
+   ![NewsScreen Screenshot](/images/NewsScreen.png)
+
+#### 4. BinScreen
+   - A screen for managing orders. Here, you can delete items from your order, add more items, add desserts, or buy the entire order.
+
+   ![BinScreen Screenshot](/images/BinScreen.png)
+
+Feel free to contribute, suggest improvements, or explore the evolution of this restaurant app in its next version!
+
+---
